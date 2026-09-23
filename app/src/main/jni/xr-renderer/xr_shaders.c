@@ -35,6 +35,11 @@ const char* const FRAGMENT_SRC =
     "uniform float u_lowResWidth;\n"
     "uniform float u_frameWidth;\n"
     "out vec4 fragColor;\n"
+    // Fraction of the panel's half width/height the borderless feather fades
+    // over. 0.15 keeps the centre of a normal 16:9 stream fully sharp and
+    // only softens roughly the outer sixth of the picture. Raise this for a
+    // wider, softer fade; lower it to keep more of the picture crisp.\n"
+    "const float FEATHER_FRAC = 0.15;\n"
     "void main() {\n"
     "    float d = texture(u_depth, v_plain).a;\n"
     "    if (u_showDepth > 0.5) {\n"
@@ -76,6 +81,18 @@ const char* const FRAGMENT_SRC =
     "    }\n"
     "    fragColor = texture(u_texture, (u_texmatrix * vec4(tc, 0.0, 1.0)).xy);\n"
     "    fragColor.rgb *= u_tint;\n"
+    // Borderless feather: alpha is 1 across the middle of the screen and
+    // eases down to 0 over the last FEATHER_FRAC of the panel, using the
+    // panel's own plain UV rather than the disparity shifted tc, so the
+    // fade sits still even where the warp shifts colour. This is what lets
+    // the ambilight glow layer behind the picture show through instead of a
+    // hard rectangular edge. Premultiplied, matching how the glow and every
+    // other quad in this app are composited.\n"
+    "    vec2 edge = min(v_plain, 1.0 - v_plain);\n"
+    "    float t = clamp(min(edge.x, edge.y) / FEATHER_FRAC, 0.0, 1.0);\n"
+    "    float a = t * t * (3.0 - 2.0 * t);\n"
+    "    fragColor.rgb *= a;\n"
+    "    fragColor.a = a;\n"
     "}\n";
 
 // Joint bilateral upsample of the depth map. The model output is 256x256
