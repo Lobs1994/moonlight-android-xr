@@ -335,9 +335,14 @@ static void addVideoLayers(XrCtx* ctx, const FrameView* view, FrameLayers* layer
         }
         else {
             XrCompositionLayerQuad* quad = &layers->video[eye];
-            quadLayer(quad, layers->sharpenChain, 0, ctx->swapchain, ctx->videoWidth,
-                      ctx->videoHeight, view->space, view->screenPose, view->screenWidth,
-                      view->screenHeight);
+            // Alpha blending on: the fragment shader now feathers the
+            // picture's own edges to 0, and this is what lets the glow
+            // layer behind it show through there instead of the panel
+            // staying a hard opaque rectangle to its last pixel.
+            quadLayer(quad, layers->sharpenChain,
+                      XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT, ctx->swapchain,
+                      ctx->videoWidth, ctx->videoHeight, view->space, view->screenPose,
+                      view->screenWidth, view->screenHeight);
             quad->eyeVisibility = visibility;
             quad->subImage = subImage;
             pushLayer(ctx, layers, quad);
