@@ -72,6 +72,35 @@ jobs:
       - name: Build
         run: ./gradlew --no-daemon assembleNonRootDebug assembleNonRootRelease lintNonRootRelease
 
+      - name: Install build-tools for signing
+        run: (yes || true) | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "build-tools;34.0.0" > /dev/null
+
+      - name: Sign a throwaway APK so it can be sideloaded straight from here
+        # A convenience signature for every push, separate from the tag
+        # release's real keystore above: lets a build fresh off master or a
+        # branch install on a headset without the person touching keytool,
+        # zipalign or apksigner themselves. The password is deliberately
+        # fixed and public, so this is only ever for sideloading onto your
+        # own headset, never a stand-in for a real release signature.
+        run: |
+          set -e
+          TOOLS="$ANDROID_HOME/build-tools/34.0.0"
+          keytool -genkeypair -v -keystore throwaway.keystore -alias throwaway \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass throwaway123 -keypass throwaway123 \
+            -dname "CN=Moonlight XR sideload, OU=throwaway, O=throwaway, L=NA, S=NA, C=US"
+          "$TOOLS/zipalign" -f 4 \
+            app/build/outputs/apk/nonRoot/release/app-nonRoot-release-unsigned.apk \
+            moonlight-vr-release-signed.apk
+          "$TOOLS/apksigner" sign --ks throwaway.keystore --ks-pass pass:throwaway123 \
+            moonlight-vr-release-signed.apk
+          "$TOOLS/apksigner" verify moonlight-vr-release-signed.apk
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: moonlight-xr-release-signed
+          path: moonlight-vr-release-signed.apk
+
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: moonlight-xr-release
