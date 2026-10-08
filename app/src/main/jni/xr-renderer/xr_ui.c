@@ -806,6 +806,9 @@ int cogOptionCells(int option) {
     if (option == COG_OPTION_ROOM_LIGHT) {
         return COG_ROOM_LIGHT_CELLS;
     }
+    if (option == COG_OPTION_EDGE_FEATHER) {
+        return COG_EDGE_FEATHER_CELLS;
+    }
     return COG_STATS_CELLS;
 }
 
@@ -849,6 +852,9 @@ int cogOptionValue(XrCtx* ctx, int option, int headLocked) {
     }
     if (option == COG_OPTION_ROOM_LIGHT) {
         return ctx->roomLightOn ? 1 : 0;
+    }
+    if (option == COG_OPTION_EDGE_FEATHER) {
+        return ctx->edgeFeatherOn ? 1 : 0;
     }
     return ctx->overlayVisible ? 1 : 0;
 }
@@ -932,6 +938,14 @@ int cogApplyOption(XrCtx* ctx, int option, int cell) {
         ctx->roomLightOn = cell != 0;
         LOGEV("room light %s from the panel", ctx->roomLightOn ? "on" : "off");
         return SETTING_ROOM_LIGHT;
+    }
+    if (option == COG_OPTION_EDGE_FEATHER) {
+        // The picture is drawn again at once, so a still frame shows the change
+        // without waiting for the decoder to send another
+        ctx->edgeFeatherOn = cell != 0;
+        ctx->warpRedraw = 1;
+        LOGEV("edge fade %s from the panel", ctx->edgeFeatherOn ? "on" : "off");
+        return SETTING_EDGE_FEATHER;
     }
     return -1;
 }

@@ -720,6 +720,9 @@ typedef struct {
     // Whether the picture washes its light over the room. Its own option, since
     // the wash runs whether the glow is on or not. One value for every room.
     int roomLightOn;
+    // Whether the picture's own edges fade out into the glow behind it, the
+    // Display tab's edge fade row, which the panel owns from the start
+    int edgeFeatherOn;
     // Each baked room's own values for the Room tab's rows, by style, in the
     // units the preferences hold: brightness and light level in hundredths,
     // the glow 1 or 0, the size in whole percent of the room's screen. Seeded
@@ -836,6 +839,7 @@ typedef struct {
     GLint frameWidthUniform;
     GLint srcInsetUniform;
     GLint edgeFadeUniform;
+    GLint featherUniform;
     GLint depthCubicUniform;
     GLint gradeOnUniform;
     GLint gradeUniform;

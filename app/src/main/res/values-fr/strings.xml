@@ -493,6 +493,7 @@
     <string name="vr_panel_brightness">Luminosité</string>
     <string name="vr_panel_glow">Halo</string>
     <string name="vr_panel_screen_light">Lumière de l\'écran</string>
+    <string name="vr_panel_edge_fade">Bords fondus</string>
     <string name="vr_panel_light_level">Niveau de lumière</string>
     <string name="vr_panel_off">Désactivé</string>
     <string name="vr_panel_on">Activé</string>

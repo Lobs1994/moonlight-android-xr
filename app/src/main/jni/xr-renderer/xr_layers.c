@@ -493,10 +493,13 @@ static void addVideoLayers(XrCtx* ctx, const FrameView* view, FrameLayers* layer
             // picture's own edges to 0, and this is what lets the glow
             // layer behind it show through there instead of the panel
             // staying a hard opaque rectangle to its last pixel.
+            // Left off with the Display tab's edge fade row, the picture goes
+            // back to being opaque to its last pixel, as it was before
             quadLayer(quad, layers->settingsChain,
-                      XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT, ctx->swapchain,
-                      ctx->videoWidth, ctx->videoHeight, view->space, view->screenPose,
-                      view->screenWidth, view->screenHeight);
+                      ctx->edgeFeatherOn ? XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT
+                                         : 0,
+                      ctx->swapchain, ctx->videoWidth, ctx->videoHeight, view->space,
+                      view->screenPose, view->screenWidth, view->screenHeight);
             quad->eyeVisibility = visibility;
             quad->subImage = subImage;
             pushLayer(ctx, layers, quad);

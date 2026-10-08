@@ -384,6 +384,7 @@
     <string name="vr_panel_brightness">Kirkkaus</string>
     <string name="vr_panel_glow">Hehku</string>
     <string name="vr_panel_screen_light">Ruudun valo</string>
+    <string name="vr_panel_edge_fade">Pehmeät reunat</string>
     <string name="vr_panel_light_level">Valon määrä</string>
     <string name="vr_panel_off">Pois</string>
     <string name="vr_panel_on">Päällä</string>

@@ -470,7 +470,7 @@ public class XrRenderer implements SurfaceTexture.OnFrameAvailableListener {
                                    boolean handTracking, int sharpenMode, int supersampleMode,
                                    boolean perfOverlay,
                                    boolean ambilight, int ambiLevel, boolean roomLight,
-                                   int envResTier);
+                                   boolean edgeFeather, int envResTier);
     private native void nativeSetCaptureDir(long ctx, String dir);
     private native int nativeGetTexId(long ctx);
     private native ByteBuffer nativeGetModelInput(long ctx, int pair);
@@ -622,7 +622,7 @@ public class XrRenderer implements SurfaceTexture.OnFrameAvailableListener {
                         prefs.vrHandTracking, prefs.vrSharpening, prefs.vrSupersampling,
                         prefs.enablePerfOverlay,
                         prefs.vrAmbilight, prefs.vrAmbilightLevel, prefs.vrRoomLight,
-                        prefs.vrEnvResTier);
+                        prefs.vrEdgeFeather, prefs.vrEnvResTier);
                 if (nativeCtx == 0) {
                     initLatch.countDown();
                     return;
@@ -2182,6 +2182,15 @@ public class XrRenderer implements SurfaceTexture.OnFrameAvailableListener {
             }
             PreferenceManager.getDefaultSharedPreferences(prefsContext).edit()
                     .putBoolean(PreferenceConfiguration.VR_ROOM_LIGHT_PREF_STRING, on)
+                    .apply();
+        }
+        else if (setting == SETTING_EDGE_FEATHER) {
+            boolean on = value != 0;
+            if (prefConfig != null) {
+                prefConfig.vrEdgeFeather = on;
+            }
+            PreferenceManager.getDefaultSharedPreferences(prefsContext).edit()
+                    .putBoolean(PreferenceConfiguration.VR_EDGE_FEATHER_PREF_STRING, on)
                     .apply();
         }
         else if (setting == SETTING_HEAD_LOCK) {

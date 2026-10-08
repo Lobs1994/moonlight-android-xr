@@ -500,6 +500,7 @@
     <string name="vr_panel_brightness">亮度</string>
     <string name="vr_panel_glow">光晕</string>
     <string name="vr_panel_screen_light">屏幕光照</string>
+    <string name="vr_panel_edge_fade">边缘虚化</string>
     <string name="vr_panel_light_level">光照强度</string>
     <string name="vr_panel_off">关闭</string>
     <string name="vr_panel_on">开启</string>

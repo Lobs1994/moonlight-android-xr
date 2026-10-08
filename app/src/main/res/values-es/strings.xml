@@ -428,6 +428,7 @@
     <string name="vr_panel_brightness">Brillo</string>
     <string name="vr_panel_glow">Resplandor</string>
     <string name="vr_panel_screen_light">Luz de pantalla</string>
+    <string name="vr_panel_edge_fade">Bordes suaves</string>
     <string name="vr_panel_light_level">Nivel de luz</string>
     <string name="vr_panel_off">Desactivado</string>
     <string name="vr_panel_on">Activado</string>

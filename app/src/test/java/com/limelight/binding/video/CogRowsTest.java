@@ -9,15 +9,15 @@ import static org.junit.Assert.assertTrue;
 /**
  * Where the panel's rows are drawn, which has to be where the native side hit
  * tests and rings them. The display tab carries the head aim, controllers,
- * pointer sleep, ray, controller model and click rows and packs its thirteen
- * rows closer than the other tabs, and its choices are marked from one strip
+ * pointer sleep, ray, controller model, click and edge fade rows and packs its
+ * fourteen rows closer than the other tabs, and its choices are marked from one strip
  * that has to reach every row's cells. The screen tab carries head aim's two tracks under its
  * six and packs its eight rows closer too.
  */
 public class CogRowsTest {
 
     @Test
-    public void theDisplayTabHasThirteenRowsThatFit() {
+    public void theDisplayTabHasFourteenRowsThatFit() {
         assertEquals(3, COG_OPTION_HEAD_LOCK);
         assertEquals(4, COG_OPTION_HEAD_AIM);
         assertEquals(5, COG_OPTION_GAMEPAD);
@@ -25,7 +25,9 @@ public class CogRowsTest {
         assertEquals(7, COG_OPTION_RAY);
         assertEquals(8, COG_OPTION_CONTROLLERS);
         assertEquals(9, COG_OPTION_CLICK_SOUND);
-        assertEquals(12, COG_OPTION_COUNT);
+        assertEquals(COG_OPTION_ROOM_LIGHT + 1, COG_OPTION_EDGE_FEATHER);
+        assertEquals(13, COG_OPTION_COUNT);
+        assertEquals(2, COG_EDGE_FEATHER_CELLS);
         assertEquals(2, COG_GAMEPAD_CELLS);
         assertEquals(COG_OPTION_COUNT, COG_DISPLAY_SLIDER_ROW);
         assertEquals(14, SETTING_POINTER_SLEEP);
@@ -33,6 +35,7 @@ public class CogRowsTest {
         assertEquals(21, SETTING_CONTROLLER_MODEL);
         assertEquals(22, SETTING_HEAD_AIM_SENSITIVITY);
         assertEquals(23, SETTING_HEAD_AIM_DEADZONE);
+        assertEquals(24, SETTING_EDGE_FEATHER);
         assertEquals(0.197f, XrPanels.cogRowV(COG_TAB_DISPLAY, 0), 1e-6f);
         assertEquals(0.917f, XrPanels.cogRowV(COG_TAB_DISPLAY, COG_DISPLAY_SLIDER_ROW), 1e-5f);
         // The first row's band starts under the tab bar

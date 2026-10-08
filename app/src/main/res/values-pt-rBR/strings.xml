@@ -408,6 +408,7 @@
     <string name="vr_panel_brightness">Brilho</string>
     <string name="vr_panel_glow">Halo</string>
     <string name="vr_panel_screen_light">Luz da tela</string>
+    <string name="vr_panel_edge_fade">Bordas suaves</string>
     <string name="vr_panel_light_level">Nível de luz</string>
     <string name="vr_panel_off">Desligado</string>
     <string name="vr_panel_on">Ligado</string>

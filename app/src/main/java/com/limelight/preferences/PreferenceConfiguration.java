@@ -131,6 +131,7 @@ public class PreferenceConfiguration {
     public static final String VR_AMBILIGHT_PREF_STRING = "checkbox_vr_ambilight";
     public static final String VR_AMBILIGHT_LEVEL_PREF_STRING = "seekbar_vr_ambilight_level";
     public static final String VR_ROOM_LIGHT_PREF_STRING = "checkbox_vr_room_light";
+    public static final String VR_EDGE_FEATHER_PREF_STRING = "checkbox_vr_edge_feather";
     // Each room's own values from the headset panel's Room tab, one key per
     // room by its environment id, so room_brightness_4 is the Home Theater's.
     // Brightness and the light level are in the renderer's hundredths, the
@@ -269,6 +270,7 @@ public class PreferenceConfiguration {
     // Inside a room the light off the picture is most of what makes the place
     // look lit at all
     public static final boolean DEFAULT_VR_ROOM_LIGHT = true;
+    public static final boolean DEFAULT_VR_EDGE_FEATHER = true;
     // Warnings and errors by default. The file is small, and a report that
     // arrives without one is a round trip nobody wants.
     public static final String DEFAULT_FILE_LOG = "basic";
@@ -390,6 +392,7 @@ public class PreferenceConfiguration {
     public int vrAmbilightLevel;
     // The same colours washed over the walls of a 3d environment
     public boolean vrRoomLight;
+    public boolean vrEdgeFeather;
     // Brightness, contrast, gamma and saturation over the picture, in
     // XrShared's PICTURE_ order and units. All four at their defaults is the
     // picture as streamed.
@@ -1449,6 +1452,8 @@ public class PreferenceConfiguration {
         config.vrAmbilightLevel = prefs.getInt(VR_AMBILIGHT_LEVEL_PREF_STRING,
                 DEFAULT_VR_AMBILIGHT_LEVEL);
         config.vrRoomLight = prefs.getBoolean(VR_ROOM_LIGHT_PREF_STRING, DEFAULT_VR_ROOM_LIGHT);
+        config.vrEdgeFeather = prefs.getBoolean(VR_EDGE_FEATHER_PREF_STRING,
+                DEFAULT_VR_EDGE_FEATHER);
         config.vrPicture = readPicture(prefs);
         config.vrEnvironmentId = prefs.getInt(VR_ENVIRONMENT_ID_PREF_STRING, -1);
         config.vrRoomLevels = isRoomEnvironment(config.vrEnvironmentId)

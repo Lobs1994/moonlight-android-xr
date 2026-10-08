@@ -881,6 +881,7 @@ Java_com_limelight_binding_video_XrRenderer_nativeInit(JNIEnv* env, jobject thiz
                                                        jint supersampleMode,
                                                        jboolean perfOverlay, jboolean ambilight,
                                                        jint ambiLevel, jboolean roomLight,
+                                                       jboolean edgeFeather,
                                                        jint envResTier) {
     XrCtx* ctx = calloc(1, sizeof(XrCtx));
     ctx->handsEnabled = handTracking;
@@ -1019,6 +1020,7 @@ Java_com_limelight_binding_video_XrRenderer_nativeInit(JNIEnv* env, jobject thiz
     ctx->gradeOn = 0;
     // The room's own light off the picture, which the panel owns from here on
     ctx->roomLightOn = roomLight;
+    ctx->edgeFeatherOn = edgeFeather;
     // And each room's own rows as its table row starts them, until Java hands
     // down what the preferences say
     roomLevelsFromTable(ctx);

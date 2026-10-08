@@ -60,6 +60,9 @@ const char* const FRAGMENT_SRC =
     // falls to nothing, in frame uv. 0 is no band.
     "uniform float u_edgeFade;\n"
     "uniform float u_depthCubic;\n"
+    // 1 fades the picture's own edges out into the glow behind it, 0 leaves
+    // them hard as they always were
+    "uniform float u_feather;\n"
     GRADE_GLSL
     "out vec4 fragColor;\n"
     // Fraction of the panel's half width/height the borderless feather fades
@@ -182,7 +185,7 @@ const char* const FRAGMENT_SRC =
     // other quad in this app are composited.
     "    vec2 featherEdge = min(v_plain, 1.0 - v_plain);\n"
     "    float featherT = clamp(min(featherEdge.x, featherEdge.y) / FEATHER_FRAC, 0.0, 1.0);\n"
-    "    float featherA = featherT * featherT * (3.0 - 2.0 * featherT);\n"
+    "    float featherA = mix(1.0, featherT * featherT * (3.0 - 2.0 * featherT), u_feather);\n"
     "    fragColor.rgb *= featherA;\n"
     "    fragColor.a = featherA;\n"
     "}\n";

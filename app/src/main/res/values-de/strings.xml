@@ -429,6 +429,7 @@
     <string name="vr_panel_brightness">Helligkeit</string>
     <string name="vr_panel_glow">Leuchten</string>
     <string name="vr_panel_screen_light">Bildschirmlicht</string>
+    <string name="vr_panel_edge_fade">Randverlauf</string>
     <string name="vr_panel_light_level">Lichtstärke</string>
     <string name="vr_panel_off">Aus</string>
     <string name="vr_panel_on">Ein</string>

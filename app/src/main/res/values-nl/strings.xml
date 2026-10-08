@@ -415,6 +415,7 @@
     <string name="vr_panel_brightness">Helderheid</string>
     <string name="vr_panel_glow">Gloed</string>
     <string name="vr_panel_screen_light">Schermlicht</string>
+    <string name="vr_panel_edge_fade">Zachte randen</string>
     <string name="vr_panel_light_level">Lichtsterkte</string>
     <string name="vr_panel_off">Uit</string>
     <string name="vr_panel_on">Aan</string>

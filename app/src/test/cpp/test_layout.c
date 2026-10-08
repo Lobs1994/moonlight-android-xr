@@ -512,9 +512,10 @@ static void testTheRowsFit(void) {
         CHECK(last + 0.0425f < 1.0f - 0.03f);
         CHECK(last + half <= 1.0f);
     }
-    // The display tab's thirteen rows, head aim's after head locked and the
+    // The display tab's fourteen rows, head aim's after head locked and the
     // controllers' pointer or gamepad after that, the glow level track last
-    CHECK(COG_DISPLAY_SLIDER_ROW == 12);
+    CHECK(COG_DISPLAY_SLIDER_ROW == 13);
+    CHECK(COG_OPTION_EDGE_FEATHER == COG_OPTION_ROOM_LIGHT + 1);
     CHECK(COG_OPTION_HEAD_AIM == COG_OPTION_HEAD_LOCK + 1);
     CHECK(COG_OPTION_GAMEPAD == COG_OPTION_HEAD_AIM + 1);
     CHECK(COG_OPTION_POINTER_SLEEP == COG_OPTION_GAMEPAD + 1);

@@ -110,7 +110,8 @@ final class XrPanels {
             R.string.vr_panel_head_aim, R.string.vr_panel_controllers,
             R.string.vr_panel_pointer_sleep, R.string.vr_panel_ray,
             R.string.vr_panel_controller_model, R.string.vr_panel_click_sound,
-            R.string.vr_panel_glow, R.string.vr_panel_screen_light };
+            R.string.vr_panel_glow, R.string.vr_panel_screen_light,
+            R.string.vr_panel_edge_fade };
     private static final int[][] COG_OPTION_CELLS = {
             { R.string.vr_panel_off, R.string.vr_panel_normal, R.string.vr_panel_quality },
             { R.string.vr_panel_off, R.string.vr_panel_normal, R.string.vr_panel_quality },
@@ -118,6 +119,7 @@ final class XrPanels {
             { R.string.vr_panel_off, R.string.vr_panel_on },
             { R.string.vr_panel_off, R.string.vr_panel_on },
             { R.string.vr_panel_pointer, R.string.vr_panel_gamepad },
+            { R.string.vr_panel_off, R.string.vr_panel_on },
             { R.string.vr_panel_off, R.string.vr_panel_on },
             { R.string.vr_panel_off, R.string.vr_panel_on },
             { R.string.vr_panel_off, R.string.vr_panel_on },

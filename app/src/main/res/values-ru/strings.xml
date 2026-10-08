@@ -422,6 +422,7 @@
     <string name="vr_panel_brightness">Яркость</string>
     <string name="vr_panel_glow">Свечение</string>
     <string name="vr_panel_screen_light">Свет экрана</string>
+    <string name="vr_panel_edge_fade">Мягкие края</string>
     <string name="vr_panel_light_level">Уровень света</string>
     <string name="vr_panel_off">Выкл.</string>
     <string name="vr_panel_on">Вкл.</string>

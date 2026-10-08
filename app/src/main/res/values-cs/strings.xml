@@ -411,6 +411,7 @@
     <string name="vr_panel_brightness">Jas</string>
     <string name="vr_panel_glow">Záře</string>
     <string name="vr_panel_screen_light">Světlo obrazovky</string>
+    <string name="vr_panel_edge_fade">Měkké okraje</string>
     <string name="vr_panel_light_level">Úroveň světla</string>
     <string name="vr_panel_off">Vypnuto</string>
     <string name="vr_panel_on">Zapnuto</string>

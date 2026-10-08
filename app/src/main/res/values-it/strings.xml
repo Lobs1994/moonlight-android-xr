@@ -431,6 +431,7 @@
     <string name="vr_panel_brightness">Luminosità</string>
     <string name="vr_panel_glow">Bagliore</string>
     <string name="vr_panel_screen_light">Luce dello schermo</string>
+    <string name="vr_panel_edge_fade">Bordi sfumati</string>
     <string name="vr_panel_light_level">Livello di luce</string>
     <string name="vr_panel_off">Disattivato</string>
     <string name="vr_panel_on">Attivato</string>

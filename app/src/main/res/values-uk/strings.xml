@@ -426,6 +426,7 @@
     <string name="vr_panel_brightness">Яскравість</string>
     <string name="vr_panel_glow">Світіння</string>
     <string name="vr_panel_screen_light">Світло екрана</string>
+    <string name="vr_panel_edge_fade">Плавні краї</string>
     <string name="vr_panel_light_level">Рівень світла</string>
     <string name="vr_panel_off">Вимк.</string>
     <string name="vr_panel_on">Увімк.</string>

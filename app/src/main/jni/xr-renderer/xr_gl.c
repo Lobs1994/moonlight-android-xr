@@ -240,6 +240,7 @@ int initGl(XrCtx* ctx) {
     ctx->frameWidthUniform = glGetUniformLocation(ctx->program, "u_frameWidth");
     ctx->srcInsetUniform = glGetUniformLocation(ctx->program, "u_srcInset");
     ctx->edgeFadeUniform = glGetUniformLocation(ctx->program, "u_edgeFade");
+    ctx->featherUniform = glGetUniformLocation(ctx->program, "u_feather");
     ctx->depthCubicUniform = glGetUniformLocation(ctx->program, "u_depthCubic");
     ctx->gradeOnUniform = glGetUniformLocation(ctx->program, "u_gradeOn");
     ctx->gradeUniform = glGetUniformLocation(ctx->program, "u_grade");
@@ -498,6 +499,8 @@ void renderVideoFrame(XrCtx* ctx, const float* texMatrix, float separation) {
     glUniform1f(ctx->srcInsetUniform,
                 ctx->srcInsetOn ? 0.5f / (float)ctx->videoWidth : -1.0f);
     glUniform1f(ctx->edgeFadeUniform, (float)ctx->edgeFadePx / (float)ctx->videoWidth);
+    // The picture's own edge fade into the glow, 1 on and 0 for the hard edge
+    glUniform1f(ctx->featherUniform, ctx->edgeFeatherOn ? 1.0f : 0.0f);
     // Mono never uses the depth it reads, so it keeps the single fetch
     glUniform1f(ctx->depthCubicUniform, ctx->depthCubic && eyes == 2 ? 1.0f : 0.0f);
     setGradeUniforms(ctx, ctx->gradeOnUniform, ctx->gradeUniform, ctx->gradeOn);

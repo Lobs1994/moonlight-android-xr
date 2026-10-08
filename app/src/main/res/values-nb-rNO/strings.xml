@@ -382,6 +382,7 @@
     <string name="vr_panel_brightness">Lysstyrke</string>
     <string name="vr_panel_glow">Glød</string>
     <string name="vr_panel_screen_light">Skjermlys</string>
+    <string name="vr_panel_edge_fade">Myke kanter</string>
     <string name="vr_panel_light_level">Lysnivå</string>
     <string name="vr_panel_off">Av</string>
     <string name="vr_panel_on">På</string>

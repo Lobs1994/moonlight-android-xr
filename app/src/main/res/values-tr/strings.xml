@@ -415,6 +415,7 @@
     <string name="vr_panel_brightness">Parlaklık</string>
     <string name="vr_panel_glow">Işıma</string>
     <string name="vr_panel_screen_light">Ekran ışığı</string>
+    <string name="vr_panel_edge_fade">Yumuşak kenarlar</string>
     <string name="vr_panel_light_level">Işık düzeyi</string>
     <string name="vr_panel_off">Kapalı</string>
     <string name="vr_panel_on">Açık</string>

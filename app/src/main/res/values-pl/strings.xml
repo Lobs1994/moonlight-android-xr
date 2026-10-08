@@ -415,6 +415,7 @@
     <string name="vr_panel_brightness">Jasność</string>
     <string name="vr_panel_glow">Poświata</string>
     <string name="vr_panel_screen_light">Światło ekranu</string>
+    <string name="vr_panel_edge_fade">Miękkie krawędzie</string>
     <string name="vr_panel_light_level">Poziom światła</string>
     <string name="vr_panel_off">Wyłączone</string>
     <string name="vr_panel_on">Włączone</string>

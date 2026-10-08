@@ -415,6 +415,7 @@
     <string name="vr_panel_brightness">Ljusstyrka</string>
     <string name="vr_panel_glow">Glöd</string>
     <string name="vr_panel_screen_light">Skärmljus</string>
+    <string name="vr_panel_edge_fade">Mjuka kanter</string>
     <string name="vr_panel_light_level">Ljusnivå</string>
     <string name="vr_panel_off">Av</string>
     <string name="vr_panel_on">På</string>

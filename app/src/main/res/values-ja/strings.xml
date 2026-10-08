@@ -389,6 +389,7 @@
     <string name="vr_panel_brightness">明るさ</string>
     <string name="vr_panel_glow">グロー</string>
     <string name="vr_panel_screen_light">スクリーンの光</string>
+    <string name="vr_panel_edge_fade">端のぼかし</string>
     <string name="vr_panel_light_level">光の強さ</string>
     <string name="vr_panel_off">オフ</string>
     <string name="vr_panel_on">オン</string>
