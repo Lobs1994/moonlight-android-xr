@@ -495,8 +495,10 @@ const char* const GLOW_FRAGMENT_SRC =
     "uniform sampler2D u_raw;\n"
     "uniform float u_feather;\n"
     "out vec4 fragColor;\n"
-    // 1.7 is GLOW_SCALE and 32.0 is AMBI_SAMPLE_TEX, both kept in step by hand
-    "const float scale = 1.7;\n"
+    // How much larger than the screen the glow is, GLOW_SCALE or with the
+    // picture's edges fading out GLOW_SCALE_WIDE, set by the draw. 32.0 is
+    // AMBI_SAMPLE_TEX, kept in step by hand.
+    "uniform float u_scale;\n"
     "const float size = 32.0;\n"
     // A cubic B spline over the colour texture, done as four bilinear fetches.
     // Plain bilinear puts a crease at every texel boundary, and magnified this
@@ -584,41 +586,8 @@ const char* const GLOW_FRAGMENT_SRC =
     "            + texture(u_texture, vec2(h2.x, h2.y)).rgb * g2.x;\n"
     "    return r0 * g0.y + r1 * g1.y + r2 * g2.y;\n"
     "}\n"
-    // The widened blur over the unlifted sample, for the far reaches of the
-    // glow when the picture's edges fade out
-    "vec3 blurredRaw(vec2 fuv) {\n"
-    "    vec2 tc = fuv * size - 0.5;\n"
-    "    vec2 base = floor(tc);\n"
-    "    vec2 f = tc - base;\n"
-    "    vec2 f2 = f * f;\n"
-    "    vec2 f3 = f2 * f;\n"
-    // The spline's weights on base - 1 to base + 2, then the widened
-    // kernel's on base - 2 to base + 3
-    "    vec2 b0 = (1.0 - 3.0 * f + 3.0 * f2 - f3) / 6.0;\n"
-    "    vec2 b1 = (4.0 - 6.0 * f2 + 3.0 * f3) / 6.0;\n"
-    "    vec2 b2 = (1.0 + 3.0 * f + 3.0 * f2 - 3.0 * f3) / 6.0;\n"
-    "    vec2 b3 = f3 / 6.0;\n"
-    "    vec2 wb = (b0 + b1) / 3.0;\n"
-    "    vec2 wd = (b1 + b2 + b3) / 3.0;\n"
-    "    vec2 wf = b3 / 3.0;\n"
-    "    vec2 g0 = (2.0 * b0 + b1) / 3.0;\n"
-    "    vec2 g1 = (b0 + 2.0 * b1 + 2.0 * b2 + b3) / 3.0;\n"
-    "    vec2 g2 = (b2 + 2.0 * b3) / 3.0;\n"
-    "    vec2 h0 = (base - 1.5 + wb / g0) / size;\n"
-    "    vec2 h1 = (base + 0.5 + wd / g1) / size;\n"
-    "    vec2 h2 = (base + 2.5 + wf / g2) / size;\n"
-    "    vec3 r0 = texture(u_raw, vec2(h0.x, h0.y)).rgb * g0.x\n"
-    "            + texture(u_raw, vec2(h1.x, h0.y)).rgb * g1.x\n"
-    "            + texture(u_raw, vec2(h2.x, h0.y)).rgb * g2.x;\n"
-    "    vec3 r1 = texture(u_raw, vec2(h0.x, h1.y)).rgb * g0.x\n"
-    "            + texture(u_raw, vec2(h1.x, h1.y)).rgb * g1.x\n"
-    "            + texture(u_raw, vec2(h2.x, h1.y)).rgb * g2.x;\n"
-    "    vec3 r2 = texture(u_raw, vec2(h0.x, h2.y)).rgb * g0.x\n"
-    "            + texture(u_raw, vec2(h1.x, h2.y)).rgb * g1.x\n"
-    "            + texture(u_raw, vec2(h2.x, h2.y)).rgb * g2.x;\n"
-    "    return r0 * g0.y + r1 * g1.y + r2 * g2.y;\n"
-    "}\n"
     "void main() {\n"
+    "    float scale = u_scale;\n"
     "    vec2 uv = v_plain;\n"
     "    vec2 fuv = (uv - 0.5) * scale + 0.5;\n"
     "    vec3 color;\n"
@@ -638,17 +607,33 @@ const char* const GLOW_FRAGMENT_SRC =
     "    float a = fall * u_intensity;\n"
     // Premultiplied, which is what the runtime composites the panel art as
     "    vec4 glowOut = vec4(color * a, a);\n"
-    // With the picture's edges fading out, the glow is the picture itself
-    // spread outward: its own colours at their own brightness, sharp at the
-    // screen's edge so the fading picture lands on matching light, then going
-    // softer and fainter with distance until nothing is left at the rim. The
-    // glow level sets how far it carries, and turns it off at the bottom.
-    // Premultiplied, like the rest.
+    // With the picture's edges fading out, the glow is the picture's outermost
+    // colours carried outward and filling the view: each point past the screen
+    // takes the colour of the nearest point on the screen's edge, averaged
+    // along that edge over a stretch that widens with the distance, so the
+    // glow gets softer as it goes. Its brightness falls off with distance
+    // too, to nothing at the rim. The glow level sets how far it carries,
+    // and turns it off at the bottom. Premultiplied, like the rest.
     "    if (u_feather > 0.5) {\n"
+    "        vec2 edge = clamp(fuv, 0.0, 1.0);\n"
+    "        vec2 past = fuv - edge;\n"
+    "        float dist = length(past);\n"
+    // Along the edge, which is across the line out from it: straight up or
+    // down beside the screen, and on the slant round a corner
+    "        vec2 along = vec2(-past.y, past.x) / max(dist, 1e-5);\n"
+    "        float reachUv = min(0.03 + 0.4 * dist, 0.45);\n"
+    "        vec3 sum = vec3(0.0);\n"
+    "        float wsum = 0.0;\n"
+    "        for (int i = -4; i <= 4; i++) {\n"
+    "            float f = float(i) * 0.25;\n"
+    "            float w = exp(-2.2 * f * f);\n"
+    "            sum += w * texture(u_raw, clamp(edge + along * (f * reachUv), 0.0, 1.0)).rgb;\n"
+    "            wsum += w;\n"
+    "        }\n"
+    "        vec3 spread = mix(splineRaw(fuv), sum / wsum, smoothstep(0.0, 0.1, dist));\n"
     "        float prof = 1.0 - s;\n"
     "        float carry = mix(2.2, 0.8, clamp(u_intensity, 0.0, 1.0));\n"
     "        float af = pow(prof, carry) * min(1.0, u_intensity * 4.0);\n"
-    "        vec3 spread = mix(splineRaw(fuv), blurredRaw(fuv), smoothstep(0.0, 0.6, t));\n"
     "        glowOut = vec4(spread * af, af);\n"
     "    }\n"
     "    fragColor = glowOut;\n"

@@ -76,6 +76,7 @@ int initAmbilight(XrCtx* ctx) {
     ctx->glowIntensityUniform = glGetUniformLocation(ctx->glowProgram, "u_intensity");
     ctx->glowBlurUniform = glGetUniformLocation(ctx->glowProgram, "u_blur");
     ctx->glowFeatherUniform = glGetUniformLocation(ctx->glowProgram, "u_feather");
+    ctx->glowScaleUniform = glGetUniformLocation(ctx->glowProgram, "u_scale");
     glUseProgram(ctx->glowProgram);
     glUniform1i(glGetUniformLocation(ctx->glowProgram, "u_texture"), 0);
     // The unlifted sample rides on the second unit
@@ -443,6 +444,7 @@ void runGlowRender(XrCtx* ctx) {
     // picture, which the sample as it is does and the lifted copy does not
     int feather = ctx->edgeFeatherOn ? 1 : 0;
     glUniform1f(ctx->glowFeatherUniform, feather ? 1.0f : 0.0f);
+    glUniform1f(ctx->glowScaleUniform, feather ? GLOW_SCALE_WIDE : GLOW_SCALE);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, ctx->ambiTexture);
     glActiveTexture(GL_TEXTURE0);

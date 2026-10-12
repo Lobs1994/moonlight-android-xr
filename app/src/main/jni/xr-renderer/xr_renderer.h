@@ -681,6 +681,7 @@ typedef struct {
     GLint glowIntensityUniform;
     GLint glowBlurUniform;
     GLint glowFeatherUniform;
+    GLint glowScaleUniform;
     GLuint glowFbo;
     // The glow's own copy of the sample, lifted to a steady luma with a dark
     // edge rolled off, which the glow is drawn from rather than the sample

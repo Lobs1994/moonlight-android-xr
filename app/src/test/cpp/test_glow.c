@@ -555,6 +555,27 @@ static void testCylinderEdgeCases(void) {
     CHECK(g.rectX == 0 && g.rectWidth == GLOW_TEX);
 }
 
+// The wide glow the picture's edge fade carries across the view: the same
+// cylinder at a bigger size, never more than a cylinder can take, and the
+// plain function is the one at the plain size
+static void testWideGlowCylinder(void) {
+    GlowCylinder plain, same, wide;
+    CHECK(glowCylinderFor(3.0f, 3.0f * 9.0f / 16.0f, 3.0f, &plain));
+    CHECK(glowCylinderForScale(3.0f, 3.0f * 9.0f / 16.0f, 3.0f, GLOW_SCALE, &same));
+    CHECK_NEAR(same.centralAngle, plain.centralAngle, 1e-6);
+    CHECK_NEAR(same.aspectRatio, plain.aspectRatio, 1e-6);
+    CHECK(same.rectX == plain.rectX && same.rectWidth == plain.rectWidth);
+    CHECK(GLOW_SCALE_WIDE > GLOW_SCALE);
+    // 1 rad of picture, so 6 rad of glow: short of the limit and whole
+    CHECK(glowCylinderForScale(3.0f, 3.0f * 9.0f / 16.0f, 3.0f, GLOW_SCALE_WIDE, &wide));
+    CHECK_NEAR(wide.centralAngle, GLOW_SCALE_WIDE, 1e-5);
+    CHECK(wide.centralAngle <= GLOW_MAX_ANGLE);
+    CHECK(wide.rectX == 0 && wide.rectWidth == GLOW_TEX);
+    // A wider picture is cut to its middle columns rather than overrun
+    CHECK(glowCylinderForScale(6.0f, 6.0f * 9.0f / 16.0f, 3.0f, GLOW_SCALE_WIDE, &wide));
+    CHECK(wide.centralAngle <= GLOW_MAX_ANGLE && wide.rectWidth < GLOW_TEX && wide.rectWidth >= 2);
+}
+
 int main(void) {
     testSteadyLuma();
     testBlackStaysDark();
@@ -570,5 +591,6 @@ int main(void) {
     testFlatGlowHidesBehindACloseCurve();
     testCylinderFollowsTheScreen();
     testCylinderEdgeCases();
+    testWideGlowCylinder();
     return checksDone("xr_glow");
 }

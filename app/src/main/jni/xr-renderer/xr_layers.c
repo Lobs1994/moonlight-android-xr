@@ -390,9 +390,11 @@ static void addGlowLayer(XrCtx* ctx, const FrameView* view, FrameLayers* layers)
         // around the picture as drawn
         GlowCylinder shape;
         float fit = cylinderFit(view->screenWidth, ctx->screenRadius);
+        // With the picture's edges fading out the glow is the wide one
+        float glowScale = ctx->edgeFeatherOn ? GLOW_SCALE_WIDE : GLOW_SCALE;
         if (view->screenCurved
-                && glowCylinderFor(view->screenWidth * fit, view->screenHeight * fit,
-                                   ctx->screenRadius, &shape)) {
+                && glowCylinderForScale(view->screenWidth * fit, view->screenHeight * fit,
+                                        ctx->screenRadius, glowScale, &shape)) {
             XrCompositionLayerCylinderKHR* cyl = &layers->glowCylinder;
             memset(cyl, 0, sizeof(*cyl));
             cyl->type = XR_TYPE_COMPOSITION_LAYER_CYLINDER_KHR;
@@ -420,7 +422,7 @@ static void addGlowLayer(XrCtx* ctx, const FrameView* view, FrameLayers* layers)
         quadLayer(&layers->glow, NULL, XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT,
                   ctx->glowSwapchain, GLOW_TEX, GLOW_TEX, view->space,
                   poseOffset(view->screenPose, proudLocal),
-                  view->screenWidth * GLOW_SCALE, view->screenHeight * GLOW_SCALE);
+                  view->screenWidth * glowScale, view->screenHeight * glowScale);
         pushLayer(ctx, layers, &layers->glow);
     }
 }

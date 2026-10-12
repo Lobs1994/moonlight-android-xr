@@ -15,6 +15,9 @@
 // of the picture it sits, toward the viewer, in metres. The compositor stacks
 // layers in the order they are handed over, so the picture still covers it.
 #define GLOW_SCALE 1.7f
+// The same, with the picture's edges fading out into the glow: wide enough to
+// carry the picture's colours out across the whole of the view
+#define GLOW_SCALE_WIDE 6.0f
 #define GLOW_PROUD_M 0.05f
 
 // The glow's colour comes from the picture and its brightness from the glow
@@ -73,6 +76,9 @@ typedef struct {
 // 0, and nothing written, when there is no cylinder to be had
 int glowCylinderFor(float screenWidth, float screenHeight, float screenRadius,
                     GlowCylinder* out);
+// The same at a glow size of the caller's choosing
+int glowCylinderForScale(float screenWidth, float screenHeight, float screenRadius,
+                         float scale, GlowCylinder* out);
 
 // Rec. 709 luma
 float glowLuma(const float rgb[3]);
