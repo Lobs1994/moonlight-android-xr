@@ -487,6 +487,13 @@ const char* const GLOW_FRAGMENT_SRC =
     // 1 takes the colour through a spline widened by three texels, 0 through
     // the spline alone
     "uniform float u_blur;\n"
+    // The frame's colour sample as it is, not lifted to the glow's steady
+    // luma, and whether the picture's edges fade out into the glow. With the
+    // fade on, the glow beside the screen has to be the picture's own colour
+    // at its own brightness, or the picture fades to a dark band before the
+    // glow takes over.
+    "uniform sampler2D u_raw;\n"
+    "uniform float u_feather;\n"
     "out vec4 fragColor;\n"
     // 1.7 is GLOW_SCALE and 32.0 is AMBI_SAMPLE_TEX, both kept in step by hand
     "const float scale = 1.7;\n"
@@ -516,6 +523,27 @@ const char* const GLOW_FRAGMENT_SRC =
     "    vec3 c10 = texture(u_texture, vec2(h1.x, h0.y)).rgb;\n"
     "    vec3 c01 = texture(u_texture, vec2(h0.x, h1.y)).rgb;\n"
     "    vec3 c11 = texture(u_texture, vec2(h1.x, h1.y)).rgb;\n"
+    "    return mix(mix(c11, c01, g0.x), mix(c10, c00, g0.x), g0.y);\n"
+    "}\n"
+    // The same spline over the unlifted sample
+    "vec3 splineRaw(vec2 fuv) {\n"
+    "    vec2 tc = fuv * size - 0.5;\n"
+    "    vec2 base = floor(tc);\n"
+    "    vec2 f = tc - base;\n"
+    "    vec2 f2 = f * f;\n"
+    "    vec2 f3 = f2 * f;\n"
+    "    vec2 w0 = (1.0 - 3.0 * f + 3.0 * f2 - f3) / 6.0;\n"
+    "    vec2 w1 = (4.0 - 6.0 * f2 + 3.0 * f3) / 6.0;\n"
+    "    vec2 w2 = (1.0 + 3.0 * f + 3.0 * f2 - 3.0 * f3) / 6.0;\n"
+    "    vec2 w3 = f3 / 6.0;\n"
+    "    vec2 g0 = w0 + w1;\n"
+    "    vec2 g1 = w2 + w3;\n"
+    "    vec2 h0 = (base - 0.5 + w1 / g0) / size;\n"
+    "    vec2 h1 = (base + 1.5 + w3 / g1) / size;\n"
+    "    vec3 c00 = texture(u_raw, vec2(h0.x, h0.y)).rgb;\n"
+    "    vec3 c10 = texture(u_raw, vec2(h1.x, h0.y)).rgb;\n"
+    "    vec3 c01 = texture(u_raw, vec2(h0.x, h1.y)).rgb;\n"
+    "    vec3 c11 = texture(u_raw, vec2(h1.x, h1.y)).rgb;\n"
     "    return mix(mix(c11, c01, g0.x), mix(c10, c00, g0.x), g0.y);\n"
     "}\n"
     // The average of nine spline evaluations one sample texel apart, so the
@@ -575,7 +603,17 @@ const char* const GLOW_FRAGMENT_SRC =
     "    float fall = (1.0 - s) * (1.0 - s);\n"
     "    float a = fall * u_intensity;\n"
     // Premultiplied, which is what the runtime composites the panel art as
-    "    fragColor = vec4(color * a, a);\n"
+    "    vec4 glowOut = vec4(color * a, a);\n"
+    // With the picture's edges fading out, the strip of glow just outside the
+    // screen, and all of it under the picture, is the picture's own blurred
+    // colour at full strength, which then eases into the glow as usual a
+    // little way out. Scaled by the glow level, so a glow turned right down
+    // still means very little glow. Premultiplied on both sides of the mix.
+    "    if (u_feather > 0.5) {\n"
+    "        float k = (1.0 - smoothstep(0.0, 0.45, t)) * min(1.0, u_intensity * 2.0);\n"
+    "        glowOut = mix(glowOut, vec4(splineRaw(fuv), 1.0), k);\n"
+    "    }\n"
+    "    fragColor = glowOut;\n"
     "}\n";
 
 // The 3d room. The light the picture throws is worked out per vertex: the only

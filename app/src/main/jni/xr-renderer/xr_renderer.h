@@ -680,6 +680,7 @@ typedef struct {
     GLuint glowProgram;
     GLint glowIntensityUniform;
     GLint glowBlurUniform;
+    GLint glowFeatherUniform;
     GLuint glowFbo;
     // The glow's own copy of the sample, lifted to a steady luma with a dark
     // edge rolled off, which the glow is drawn from rather than the sample
@@ -697,6 +698,7 @@ typedef struct {
     // either redraws it on a picture standing still
     int glowDrawnOn;
     float glowDrawnLevel;
+    int glowDrawnFeather;
     int ambilightOn;
     float ambiIntensity;
     // What the debug property asked for, or -1 while the panel still owns it

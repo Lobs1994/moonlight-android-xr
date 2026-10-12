@@ -461,6 +461,9 @@ static void addVideoLayers(XrCtx* ctx, const FrameView* view, FrameLayers* layer
             XrCompositionLayerCylinderKHR* cyl = &layers->cylinder[eye];
             memset(cyl, 0, sizeof(*cyl));
             cyl->type = XR_TYPE_COMPOSITION_LAYER_CYLINDER_KHR;
+            // The picture's edge fade needs the alpha, flat or curved
+            cyl->layerFlags = ctx->edgeFeatherOn
+                    ? XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT : 0;
             cyl->next = layers->settingsChain;
             // Radius runs from 4x distance (slightly curved) down to the
             // distance itself (wrapped around the viewer) as curvature rises

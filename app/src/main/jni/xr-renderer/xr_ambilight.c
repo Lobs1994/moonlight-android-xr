@@ -75,8 +75,11 @@ int initAmbilight(XrCtx* ctx) {
     }
     ctx->glowIntensityUniform = glGetUniformLocation(ctx->glowProgram, "u_intensity");
     ctx->glowBlurUniform = glGetUniformLocation(ctx->glowProgram, "u_blur");
+    ctx->glowFeatherUniform = glGetUniformLocation(ctx->glowProgram, "u_feather");
     glUseProgram(ctx->glowProgram);
     glUniform1i(glGetUniformLocation(ctx->glowProgram, "u_texture"), 0);
+    // The unlifted sample rides on the second unit
+    glUniform1i(glGetUniformLocation(ctx->glowProgram, "u_raw"), 1);
 
     // The lifted and rolled off copy the glow is drawn from, filtered and
     // clamped the way the sample texture is, since the glow's spline relies on
@@ -436,6 +439,13 @@ void runGlowRender(XrCtx* ctx) {
     glBindTexture(GL_TEXTURE_2D, norm ? ctx->glowEdgeTexture : ctx->ambiTexture);
     glUniform1f(ctx->glowIntensityUniform, level);
     glUniform1f(ctx->glowBlurUniform, norm ? 1.0f : 0.0f);
+    // The picture's edge fade needs the glow beside the screen to match the
+    // picture, which the sample as it is does and the lifted copy does not
+    int feather = ctx->edgeFeatherOn ? 1 : 0;
+    glUniform1f(ctx->glowFeatherUniform, feather ? 1.0f : 0.0f);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, ctx->ambiTexture);
+    glActiveTexture(GL_TEXTURE0);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 16, VERTEX_DATA);
     glEnableVertexAttribArray(0);
@@ -450,13 +460,15 @@ void runGlowRender(XrCtx* ctx) {
     ctx->glowRendered = 1;
     ctx->glowDrawnOn = 1;
     ctx->glowDrawnLevel = level;
+    ctx->glowDrawnFeather = feather;
 }
 
 int glowStale(XrCtx* ctx) {
     int on;
     float level;
     ambiEffective(ctx, &on, &level);
-    return on && (!ctx->glowDrawnOn || level != ctx->glowDrawnLevel);
+    return on && (!ctx->glowDrawnOn || level != ctx->glowDrawnLevel
+                  || (ctx->edgeFeatherOn ? 1 : 0) != ctx->glowDrawnFeather);
 }
 
 // A desktop standing still sends no frames, which left the level slider and
